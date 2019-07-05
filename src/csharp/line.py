@@ -1,11 +1,13 @@
-import re
+import math
 
 class CsharpLine(object):
     
-    def __init__(self, line, line_number, in_file):
+    def __init__(self, line, line_number, in_file, tabsize):
         self.content = line.split("\n", 1)[0]
         self.number = line_number
         self.file = in_file
+        self.tabsize = tabsize
+        self.indentation = self.calculateIndentationLevel()
     
     def isEmpty(self, content=None):
         if content:
@@ -43,29 +45,6 @@ class CsharpLine(object):
         if len(single_line_comment_removed) == 0:
             return line
         return single_line_comment_removed
-    
-    def removeMultiLineCommentEnd(self, line=None):
-        if line == None:
-            line = self.content
-        quoteSign = ""
-        multi_line_comment_end = ""
-        for index, char in enumerate(line):
-            if index > 0:
-                last = line[index-1]
-            else:
-                last = ""
-            if (char == "'" or char == '"') and last != "\\":
-                if len(quoteSign) == 0:
-                    quoteSign = char
-                else:
-                    if quoteSign == char:
-                        quoteSign = ""
-            if len(quoteSign) == 0:
-                if last == "*" and char == "/":
-                    return line[index + 1:]
-        if len(multi_line_comment_end) == 0:
-            multi_line_comment_end = line
-        return line
     
     def removeMultiLineComments(self, line=None, continue_to_next_line=True):
         if line == None:
@@ -112,3 +91,17 @@ class CsharpLine(object):
         # Remove multiline comments, except inside strings.
         line = self.removeMultiLineComments(line=line, continue_to_next_line=True)
         return line
+
+    def calculateIndentationLevel(self, stripped=False, allow_tabs_and_spaces_mixing=True):
+        content = self.getContent(stripped=stripped)
+        if allow_tabs_and_spaces_mixing:
+            content = content.replace('\t', " " * self.tabsize)
+        else:
+            raise Exception("Not allowing a mix of tabs and spaces in the indentation is not yet implemented.")
+            # TODO: Implement a way to make sure it's either tabs or spaces.
+            # For now, we transform tabs into spaces, based on the tabsize.
+            # Which is what I personally care about.
+            # I can still write a test to check for this outside the module.
+        before = len(content)
+        after = len(content.lstrip())
+        return math.floor((before - after) / self.tabsize)

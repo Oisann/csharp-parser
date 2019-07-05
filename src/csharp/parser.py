@@ -11,7 +11,7 @@ class CSharpParser():
         with open(self.filename, 'r') as file:
             for i, line in enumerate(file):
                 #TODO: Handle tab sizes and remove that from line contents
-                self.raw_lines.append(CsharpLine(line, i + 1, self))
+                self.raw_lines.append(CsharpLine(line, i + 1, self, self.tabsize))
     
     def getLine(self, line):
         if line > len(self.raw_lines) or line <= 0:

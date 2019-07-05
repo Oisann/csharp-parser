@@ -23,12 +23,12 @@ namespace TBA.Game {
             Jump();
         }
 
-        internal void SetupController(string str) {
+        internal void SetupController(string str) {    
             /* Multi-line comment on a single line */
             Debug.Log(str);
         }
 
-        void Jump()
+        void Jump(    )
         {
             var magicNumber/*_old */ = magic(0,/* 11 */ 10);
             print(/* test comment inside something else */magicNumber);

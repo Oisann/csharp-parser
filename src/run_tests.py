@@ -9,7 +9,7 @@ def main():
     file = parser.CSharpParser(os.path.join(dirname, "../csharp_test_files/basic.cs"))
     file.parse()
     for line in file.getLines():
-        print(line.getContent(True))
+        print(line.getContent(True) + "$" + str(line.indentation) + "-" + str(line.isEmpty()))
 
 if __name__ == "__main__":
     main()
